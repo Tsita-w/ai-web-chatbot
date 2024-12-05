@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome - AI Chatbot</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --success-color: #28a745;
+            --error-color: #dc3545;
+            --text-color: #495057;
+            --border-color: #dee2e6;
+            --bg-color: #f8f9fa;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tabs {
+            display: flex;
+            background: var(--bg-color);
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab {
+            padding: 12px 30px;
+            cursor: pointer;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab i {
+            font-size: 18px;
+        }
+
+        .tab.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .forms-container {
+            padding: 30px;
+        }
+
+        .form {
+            display: none;
+        }
+
+        .form.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            padding-left: 40px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group i {
+            position: absolute;
+            left: 15px;
+            top: 42px;
+            color: var(--text-color);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group input:focus + i {
+            color: var(--primary-color);
+        }
+
+        .btn {
+            background: var(--primary-color);
+            color: white;
+            padding: 14px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn i {
+            font-size: 18px;
+        }
+
+        .error-message {
+            color: var(--error-color);
+            margin-top: 5px;
+            font-size: 14px;
+            display: none;
+            animation: shake 0.5s ease;
+        }
+
+        .success-message {
+            color: var(--success-color);
+            margin-top: 5px;
+            font-size: 14px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .welcome-text {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--text-color);
+        }
+
+        .welcome-text h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 8px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 42px;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        .password-toggle:hover {
+            color: var(--primary-color);
+        }
+
+        .form-switch {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--text-color);
+        }
+
+        .form-switch a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .form-switch a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('login')">
+                <i class="fas fa-sign-in-alt"></i>
+                Login
+            </div>
+            <div class="tab" onclick="switchTab('signup')">
+                <i class="fas fa-user-plus"></i>
+                Sign Up
+            </div>
+        </div>
+
+        <div class="forms-container">
+            <div class="welcome-text">
+                <h1>Welcome to AI Chatbot</h1>
+                <p>Your personal AI assistant for meaningful conversations</p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form" class="form active" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" required>
+                    <i class="fas fa-envelope"></i>
+                    <div class="error-message" id="login-email-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" required>
+                    <i class="fas fa-lock"></i>
+                    <i class="fas fa-eye password-toggle" onclick="togglePassword('login-password')"></i>
+                    <div class="error-message" id="login-password-error"></div>
+                </div>
+                <button type="submit" class="btn" id="login-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Login
+                </button>
+                <div class="error-message" id="login-error"></div>
+                <div class="success-message" id="login-success"></div>
+                <div class="form-switch">
+                    New user? <a onclick="switchTab('signup')">Create an account</a>
+                </div>
+            </form>
+
+            <!-- Sign Up Form -->
+            <form id="signup-form" class="form" onsubmit="handleSignup(event)">
+                <div class="form-group">
+                    <label for="signup-name">Full Name</label>
+                    <input type="text" id="signup-name" required>
+                    <i class="fas fa-user"></i>
+                    <div class="error-message" id="signup-name-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="signup-email">Email</label>
+                    <input type="email" id="signup-email" required>
+                    <i class="fas fa-envelope"></i>
+                    <div class="error-message" id="signup-email-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" required>
+                    <i class="fas fa-lock"></i>
+                    <i class="fas fa-eye password-toggle" onclick="togglePassword('signup-password')"></i>
+                    <div class="error-message" id="signup-password-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="signup-confirm-password">Confirm Password</label>
+                    <input type="password" id="signup-confirm-password" required>
+                    <i class="fas fa-lock"></i>
+                    <i class="fas fa-eye password-toggle" onclick="togglePassword('signup-confirm-password')"></i>
+                    <div class="error-message" id="signup-confirm-password-error"></div>
+                </div>
+                <button type="submit" class="btn" id="signup-btn">
+                    <i class="fas fa-user-plus"></i>
+                    Sign Up
+                </button>
+                <div class="error-message" id="signup-error"></div>
+                <div class="success-message" id="signup-success"></div>
+                <div class="form-switch">
+                    Already have an account? <a onclick="switchTab('login')">Login here</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tab) {
+            // Remove active class from all tabs and forms
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.form').forEach(f => f.classList.remove('active'));
+
+            // Add active class to selected tab and form
+            document.querySelector(`.tab:${tab === 'login' ? 'first-child' : 'last-child'}`).classList.add('active');
+            document.getElementById(`${tab}-form`).classList.add('active');
+
+            // Clear all error and success messages
+            document.querySelectorAll('.error-message, .success-message').forEach(msg => {
+                msg.style.display = 'none';
+                msg.textContent = '';
+            });
+
+            // Reset forms
+            document.getElementById(`${tab}-form`).reset();
+        }
+
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = input.nextElementSibling.nextElementSibling;
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        function showLoading(buttonId) {
+            const button = document.getElementById(buttonId);
+            const originalContent = button.innerHTML;
+            button.disabled = true;
+            button.innerHTML = `${originalContent}<span class="loading"></span>`;
+            return () => {
+                button.disabled = false;
+                button.innerHTML = originalContent;
+            };
+        }
+
+        function showError(elementId, message) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.style.display = 'block';
+        }
+
+        function showSuccess(elementId, message) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.style.display = 'block';
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const stopLoading = showLoading('login-btn');
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    showSuccess('login-success', 'Login successful! Redirecting to chat...');
+                    localStorage.setItem('token', data.token);
+                    setTimeout(() => window.location.href = '/chat', 1000);
+                } else {
+                    showError('login-error', data.message || 'Login failed. Please try again.');
+                }
+            } catch (error) {
+                showError('login-error', 'An error occurred. Please try again.');
+            } finally {
+                stopLoading();
+            }
+        }
+
+        async function handleSignup(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const confirmPassword = document.getElementById('signup-confirm-password').value;
+
+            // Clear previous error messages
+            document.querySelectorAll('#signup-form .error-message').forEach(el => {
+                el.style.display = 'none';
+                el.textContent = '';
+            });
+
+            // Validate password match
+            if (password !== confirmPassword) {
+                showError('signup-confirm-password-error', 'Passwords do not match');
+                return;
+            }
+
+            const stopLoading = showLoading('signup-btn');
+
+            try {
+                const response = await fetch('/api/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    showSuccess('signup-success', 'Account created successfully! Redirecting to login...');
+                    setTimeout(() => {
+                        switchTab('login');
+                        showSuccess('login-success', 'Account created! Please login with your credentials.');
+                    }, 1500);
+                } else {
+                    showError('signup-error', data.message || 'Registration failed. Please try again.');
+                }
+            } catch (error) {
+                showError('signup-error', 'An error occurred. Please try again.');
+            } finally {
+                stopLoading();
+            }
+        }
+
+        // Check if user is already logged in
+        const token = localStorage.getItem('token');
+        if (token) {
+            window.location.href = '/chat';
+        }
+    </script>
+</body>
+</html>
